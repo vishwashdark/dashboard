@@ -1,8 +1,7 @@
-<img width="494" height="62" alt="image" src="https://github.com/user-attachments/assets/ecbc63ed-ad9a-4d19-8f9e-44b99b0b6833" />#  Aegis TrustEngine Dashboard
+#  Aegis TrustEngine
+**Platform-Scale Protection Against AI Deception**
 
-**A Multi-Agent Forensic Auditing System for AdTech & Influencer Marketing**
-
-The Aegis TrustEngine is a forensic auditing dashboard designed for brands, agencies, and compliance teams. It detects deepfakes, analyzes influencer credibility, and measures financial & reputational risk using a Zero-Tolerance Multi-Agent Swarm architecture.
+An AI-powered authenticity engine for social platforms that detects deepfakes, analyzes influencer credibility, and measures financial & reputational risk using advanced machine learning and multi-agent analysis.
 
 ---
 
