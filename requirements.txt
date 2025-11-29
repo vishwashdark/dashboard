@@ -1,5 +1,10 @@
-flask
+Flask
 flask-cors
 pymongo
 bcrypt
+google-generativeai
+Pillow
+numpy
+opencv-python
+requests
 dnspython
