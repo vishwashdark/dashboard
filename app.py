@@ -25,13 +25,13 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # 2. Google Gemini Config
-GEMINI_API_KEY = "AIzaSyCPrzH2NkSoOCmq6zONph0wYBBeAwM03Uk"
+GEMINI_API_KEY = "YOUR_API_KEY"
 genai.configure(api_key=GEMINI_API_KEY)
 model = genai.GenerativeModel('gemini-2.0-flash')
 
 # 3. Database Config
-MONGO_URI = "mongodb+srv://sans:sans@cluster0.7db5ls2.mongodb.net/?appName=Cluster0"
-DB_NAME = "aegis_db"
+MONGO_URI = "YOUR_DATABASE"
+DB_NAME = "YOUR_DATABASE_NAME"
 
 # --- DATABASE CONNECTION ---
 try:
