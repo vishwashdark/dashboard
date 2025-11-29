@@ -133,7 +133,6 @@ dashboard/
 | **Database** | MongoDB Atlas |
 | **Frontend** | HTML5, CSS3, JavaScript |
 | **Authentication** | Flask-Session |
-| **Deployment** | Docker, Gunicorn (production) |
 
 ---
 
