@@ -1,4 +1,4 @@
-#  Aegis TrustEngine Dashboard
+<img width="494" height="62" alt="image" src="https://github.com/user-attachments/assets/ecbc63ed-ad9a-4d19-8f9e-44b99b0b6833" />#  Aegis TrustEngine Dashboard
 
 **A Multi-Agent Forensic Auditing System for AdTech & Influencer Marketing**
 
@@ -16,9 +16,8 @@ The Aegis TrustEngine is a forensic auditing dashboard designed for brands, agen
 - [Setup & Installation](#-setup--installation)
 - [Usage](#-usage)
 - [Features](#-features)
-- [API Reference](#-api-reference)
 - [Contributing](#-contributing)
-- [License](#-license)
+- [Code Standards](#-code-standards)
 
 ---
 
@@ -26,10 +25,11 @@ The Aegis TrustEngine is a forensic auditing dashboard designed for brands, agen
 
 Aegis TrustEngine provides enterprise-grade content verification and influencer vetting through advanced AI models and multi-agent analysis. The platform protects brand reputation by identifying:
 
-- **Deepfakes and AI-generated content**
-- **Influencer fraud and bot networks**
-- **Toxic or non-compliant content**
-- **Financial risk in partnership deals**
+- **Deepfake Detection**: Multi-modal AI analysis using CLIP and custom models
+- **Influencer Fraud Detection**: Bot network identification and engagement analysis
+- **Content Moderation**: OpenAI-powered safety screening
+- **Risk Assessment**: Multi-agent evaluation system
+- **Real-time Analysis**: Fast inference for production environments
 
 ---
 
@@ -39,7 +39,7 @@ Data flows through a multi-stage pipeline designed to eliminate high-risk conten
 
 ```mermaid
 graph TD
-    A[Social Platforms Input] --> B[Vision Model / OpenCV]
+    A[Social Platforms Input] --> B[Vision Model CvT-13]
     B --> C[OpenAI Moderation]
     C --> D[CLIP Alignment]
     D --> E[Gemini Multimodal AI + Google Search]
@@ -54,7 +54,7 @@ graph TD
 ### Pipeline Stages
 
 1. **Input Layer**: Ingests content from social platforms
-2. **Vision Analysis**: OpenCV and vision models detect visual anomalies
+2. **Vision Analysis**: Vision model detect visual anomalies
 3. **Content Moderation**: OpenAI moderation screens for policy violations
 4. **Semantic Alignment**: CLIP ensures context-content consistency
 5. **Multimodal Intelligence**: Gemini AI performs deep content analysis
@@ -65,67 +65,7 @@ graph TD
 
 ##  The Agent Swarm (Personas)
 
-Multi-agent personas designed with cynical, brand-protective prompt engineering to maximize risk detection.
-
-### 1. 🦈 The Deal Architect — "Shark Tank Investor"
-
-**Role**: Financial structure & negotiation  
-**Logic**: Evaluates efficiency ratio of Followers vs Revenue
-
-**Behavior**:
-- **Devaluation**: Low revenue vs high followers → assumes botting
-- **Lowballing**: Protects brand P&L, not influencer ego
-- **Skeptical**: Treats all metrics as inflated until proven real
-
-**Decision Matrix**:
-```
-Engagement Rate < 2% + High Followers = RED FLAG
-Cost per Engagement > Industry Benchmark = OVERPRICED
-Follower Growth Spike without Content Quality = BOT PURCHASE
-```
-
----
-
-### 2.  The Forensic Analyst — "Zero Tolerance"
-
-**Role**: Deepfake detection  
-**Policy**: Flags ANY content with even a 1% likelihood of AI involvement
-
-**Detection Vectors**:
-- Skin smoothness / lack of pores
-- Eye/teeth artifacts
-- Background distortions
-- Incorrect anatomy (hands, proportions)
-- Lighting inconsistencies
-- Unnatural motion patterns
-
-**Technology Stack**:
-- OpenCV for frame analysis
-- CLIP for semantic-visual mismatch
-- Gemini Vision for contextual anomalies
-
----
-
-### 3.  The Risk Auditor
-
-**Role**: Toxicity, fraud, and safety auditing
-
-**Logic**:
-- Generic content + high followers = bot suspicion
-- Safe to Collaborate = **FALSE** unless profile is flawless
-- Toxicity detection in comments, captions, and engagement patterns
-
-**Risk Categories**:
-| Risk Type | Detection Method | Threshold |
-|-----------|-----------------|-----------|
-| Bot Networks | Engagement velocity analysis | >40% suspicious accounts |
-| Toxic Content | NLP sentiment + moderation API | Any violation |
-| Fraud Indicators | Follower-to-engagement ratio | <1.5% engagement rate |
-| Brand Misalignment | Semantic content analysis | Mismatch score >30% |
-
----
-
-### 4.  The Compliance Swarm
+Multi-agent personas designed with cynical, brand-protective prompt engineering to maximize risk detection
 
 A 4-node cluster enforcing strict brand safety & regulatory rules.
 
@@ -159,7 +99,10 @@ A 4-node cluster enforcing strict brand safety & regulatory rules.
 dashboard/
 ├── app.py                  # Main application logic & API routes
 ├── mcp.py                  # Model Context Protocol / AI helper functions
-├── insert_data.py          # Database seeding script
+├── CLIP_openai.py          # CLIP integration for semantic analysis (3 KB)
+├── openai_moderation.py    # OpenAI moderation API wrapper (3 KB)
+├── custom_dataset.py       # Custom dataset loader and preprocessing (1 KB)
+├── test_ai.py              # AI model testing utilities (2 KB)
 ├── requirements.txt        # Python dependencies
 ├── .env                    # API configuration (not tracked)
 │
@@ -224,33 +167,13 @@ Create a `.env` file in the root directory:
 ```env
 GEMINI_API_KEY=your_gemini_api_key_here
 OPENAI_API_KEY=your_openai_api_key_here
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/database
+YOUR_DATABASE=mongodb+srv://username:password@cluster.mongodb.net/database
 FLASK_SECRET=your_secret_key_here
 ```
 
-### 4. Seed Database
 
-```bash
-python insert_data.py
-```
 
-This will populate MongoDB with sample influencer data and test cases.
 
-### 5. Run Application
-
-**Development Mode**:
-```bash
-python app.py
-```
-
-**Production Mode**:
-```bash
-gunicorn -w 4 -b 0.0.0.0:5000 app:app
-```
-
-Access the application at: **http://localhost:5000**
-
----
 
 ##  Usage
 
@@ -261,22 +184,13 @@ Access the application at: **http://localhost:5000**
    - **Email**: `admin@aegis.ai`
    - **Password**: `admin123`
 
-### Dashboard Navigation
+### AegiesEngine Navigation
 
 - **AdTech Audit** (`/adtech`): Upload and analyze ad creatives
 - **Influencer Analysis** (`/influencer`): Vet influencer profiles
-- **Enterprise View** (`/enterprise`): Executive summary and ROI metrics
-- **Admin Console** (`/console`): System configuration and logs
+- **Enterprise View** (`/enterprise`): Executive summary of analyzed media
 
-### Analyzing an Influencer
 
-1. Go to **Influencer Analysis**
-2. Enter Instagram/TikTok handle
-3. Upload recent content samples
-4. Click **Run Audit**
-5. Review multi-agent risk assessment
-
----
 
 ##  Features
 
@@ -285,88 +199,19 @@ Access the application at: **http://localhost:5000**
 - **Deepfake Detection**: Multi-model approach to identify AI-generated content
 - **Influencer Fraud Detection**: Bot network identification and engagement analysis
 - **Brand Safety Scoring**: Content toxicity and alignment measurement
-- **Financial Risk Assessment**: ROI prediction and negotiation insights
-- **Regulatory Compliance**: FTC disclosure and claim verification
+- **Regulatory Compliance**: AI Policy Adherence
 
-###  Analytics
 
-- Real-time risk dashboards
-- Historical trend analysis
-- Comparative benchmarking
-- Exportable audit reports (PDF/CSV)
 
-###  Security
-
-- Role-based access control (RBAC)
-- Encrypted API communications
-- Audit logging for compliance
-- Data retention policies
-
----
-
-##  API Reference
-
-### POST `/api/analyze_influencer`
-
-Analyzes an influencer profile for fraud and risk.
-
-**Request Body**:
-```json
-{
-  "handle": "@influencer_name",
-  "platform": "instagram",
-  "image_url": "https://example.com/profile.jpg"
-}
-```
-
-**Response**:
-```json
-{
-  "risk_score": 67,
-  "authenticity": "MEDIUM RISK",
-  "agents": {
-    "deal_architect": {
-      "score": 45,
-      "verdict": "Overpriced - high follower count, low engagement"
-    },
-    "forensic_analyst": {
-      "score": 72,
-      "verdict": "Possible AI enhancement detected"
-    },
-    "risk_auditor": {
-      "score": 88,
-      "verdict": "SAFE - No toxicity detected"
-    },
-    "compliance_swarm": {
-      "score": 55,
-      "verdict": "Missing FTC disclosures in 3/10 posts"
-    }
-  }
-}
-```
-
-### POST `/api/analyze_creative`
-
-Audits ad creative for brand safety and compliance.
-
-**Request Body**:
-```json
-{
-  "image": "base64_encoded_image",
-  "campaign_type": "product_launch"
-}
-```
-
----
 
 ##  Contributing
 
 We welcome contributions! Please follow these guidelines:
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch (`git checkout -b feature/NewFeature`)
+3. Commit changes (`git commit -m 'Add NewFeature'`)
+4. Push to branch (`git push origin feature/NewFeature`)
 5. Open a Pull Request
 
 ### Code Standards
@@ -378,5 +223,5 @@ We welcome contributions! Please follow these guidelines:
 
 
 
-**Built with 🛡️ by the Aegis Team**  
+**Built by the Aegis Team**  
 *Protecting Brands in the Age of AI Deception*
