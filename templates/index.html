@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEGIS | Digital Integrity Defense</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            400: '#38bdf8',
+                            500: '#0ea5e9', // Sharper Sky Blue
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        accent: {
+                            500: '#6366f1', // Indigo
+                        }
+                    },
+                    backgroundImage: {
+                        'grid-pattern': "radial-gradient(rgba(148, 163, 184, 0.2) 1px, transparent 1px)",
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                    },
+                    animation: {
+                        'scan': 'scan 3s linear infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        scan: {
+                            '0%': { top: '0%', opacity: '0' },
+                            '10%': { opacity: '1' },
+                            '90%': { opacity: '1' },
+                            '100%': { top: '100%', opacity: '0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+        }
+
+        .bg-grid {
+            background-size: 24px 24px;
+            background-image: radial-gradient(rgba(148, 163, 184, 0.2) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+        }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        .scanner-line {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #0ea5e9;
+            box-shadow: 0 0 15px #0ea5e9, 0 0 30px #0ea5e9;
+            z-index: 20;
+        }
+
+        .tech-border {
+            position: relative;
+        }
+        .tech-border::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 10px; height: 10px;
+            border-top: 2px solid #cbd5e1;
+            border-left: 2px solid #cbd5e1;
+        }
+        .tech-border::after {
+            content: '';
+            position: absolute;
+            bottom: 0; right: 0;
+            width: 10px; height: 10px;
+            border-bottom: 2px solid #cbd5e1;
+            border-right: 2px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-brand-500 selection:text-white relative">
+
+    <div class="fixed inset-0 bg-grid pointer-events-none z-0"></div>
+
+    <div class="fixed top-6 left-0 right-0 flex justify-center z-50 px-4">
+        <nav class="glass-card rounded-full px-6 py-3 flex justify-between items-center w-full max-w-5xl shadow-lg border border-white/50">
+            <div class="text-lg font-bold tracking-tight text-slate-900 flex items-center gap-2">
+                <div class="w-8 h-8 rounded bg-gradient-to-br from-brand-900 to-slate-900 flex items-center justify-center text-white">
+                    <img src="style/logo.png" alt="AEGIS Logo" class="w-full h-full object-cover rounded" />
+                </div>
+                <span class="font-bold">AEGIS<span class="text-brand-500 font-mono">.AI</span></span>
+            </div>
+            <div class="flex gap-6 items-center">
+                <button class="hidden md:block text-xs font-mono font-medium text-slate-500 hover:text-brand-600 transition-colors uppercase tracking-wider">Documentation</button>
+                <button onclick="window.location.href='login.html'" class="px-5 py-2 rounded-full bg-slate-900 text-white text-xs font-mono font-bold hover:bg-brand-600 transition-all shadow-lg hover:shadow-brand-500/25 flex items-center gap-2">
+                    System Access <i data-lucide="arrow-right" class="w-3 h-3"></i>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <section class="min-h-screen flex flex-col justify-center items-center text-center p-8 pt-32 relative z-10">
+        
+        <div class="mb-8 inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm text-slate-600 font-mono text-[10px] uppercase tracking-widest">
+            <span class="flex h-2 w-2 relative">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            System Online: Threat Level Low
+        </div>
+
+        <div class="max-w-5xl space-y-8 relative">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-brand-400/20 blur-[100px] -z-10 rounded-full"></div>
+
+            <h1 class="text-6xl md:text-8xl font-extrabold tracking-tighter text-slate-900 leading-[0.9]">
+                Verify <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-accent-500">Reality.</span><br />
+                Trust Nothing.
+            </h1>
+            <p class="text-slate-500 max-w-2xl mx-auto text-lg md:text-xl font-light leading-relaxed">
+                Enterprise-grade generative AI detection. We analyze pixel-level artifacts and diffusion noise patterns to expose synthetic media manipulation.
+            </p>
+        </div>
+    </section>
+
+    <section class="py-24 px-8 relative overflow-hidden z-10 border-t border-slate-200 bg-white/50 backdrop-blur-sm">
+        <div class="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-20 items-center">
+            
+            <div class="space-y-8 order-2 md:order-1">
+                <div class="flex items-center gap-2 text-brand-600 font-mono font-bold text-xs uppercase tracking-widest border-l-2 border-brand-500 pl-3">
+                    API Integration Layer
+                </div>
+                <h2 class="text-4xl md:text-5xl font-bold text-slate-900 tracking-tight">Real-time Feed Analysis</h2>
+                <p class="text-slate-600 text-lg leading-relaxed font-light">
+                    Our scanning engine sits natively within the social feed. See how Aegis instantly differentiates between <span class="font-mono text-emerald-600 font-bold bg-emerald-50 px-1 rounded">Authentic</span> photography and <span class="font-mono text-red-500 font-bold bg-red-50 px-1 rounded">Synthetic</span> fabrications.
+                </p>
+                
+                <div class="p-6 bg-slate-50 rounded-lg border border-slate-200 tech-border">
+                    <p class="font-mono font-bold text-xs text-slate-400 uppercase mb-4 tracking-widest">Detected Signatures</p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3 text-sm font-medium text-slate-700">
+                            <div class="w-5 h-5 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center"><i data-lucide="check" class="w-3 h-3"></i></div>
+                            Stable Diffusion v2.1 Artifacts
+                        </li>
+                        <li class="flex items-center gap-3 text-sm font-medium text-slate-700">
+                            <div class="w-5 h-5 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center"><i data-lucide="check" class="w-3 h-3"></i></div>
+                            Midjourney v5.2 Up-scaling Noise
+                        </li>
+                        <li class="flex items-center gap-3 text-sm font-medium text-slate-700">
+                            <div class="w-5 h-5 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center"><i data-lucide="check" class="w-3 h-3"></i></div>
+                            Adobe Firefly Watermarks
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="order-1 md:order-2 flex justify-center md:justify-end relative group">
+                
+                <div class="absolute inset-0 bg-gradient-to-tr from-brand-500/20 to-accent-500/20 blur-[60px] rounded-full scale-75 group-hover:scale-90 transition-transform duration-700"></div>
+
+                <div class="relative w-[320px] h-[640px] bg-slate-900 border-[8px] border-slate-900 rounded-[3rem] shadow-2xl overflow-hidden ring-1 ring-slate-900/10 z-10">
+                    
+                    <div class="absolute inset-0 pointer-events-none z-50 overflow-hidden rounded-[2.5rem]">
+                        <div class="animate-scan scanner-line"></div>
+                    </div>
+
+                    <div class="h-8 bg-slate-900 flex justify-between items-center px-6 pt-2 z-20 relative">
+                        <span class="text-[10px] font-bold text-white font-mono">AEGIS OS</span>
+                        <div class="flex gap-1">
+                            <div class="w-1 h-1 bg-white rounded-full"></div>
+                            <div class="w-1 h-1 bg-white rounded-full"></div>
+                        </div>
+                    </div>
+
+                    <div class="h-full overflow-y-auto no-scrollbar bg-slate-50 pb-20 pt-2 rounded-t-[2rem]">
+                        <div class="bg-white/90 backdrop-blur p-4 sticky top-0 z-10 border-b border-gray-100 flex justify-between items-center">
+                            <h3 class="font-bold text-lg text-slate-900 tracking-tight">Feed</h3>
+                            <i data-lucide="bell" class="w-5 h-5 text-gray-400"></i>
+                        </div>
+
+                        <div class="bg-white m-4 rounded-2xl shadow-sm border border-gray-100 overflow-hidden group/card relative">
+                            <div class="absolute inset-0 bg-red-500/5 z-20 pointer-events-none border-2 border-red-500/20 rounded-2xl"></div>
+
+                            <div class="p-3 flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-purple-400 to-pink-400"></div>
+                                <span class="text-sm font-bold text-gray-800">travel_bot_01</span>
+                            </div>
+                            <div class="relative">
+                                <img src="https://picsum.photos/seed/fake1/400/300" class="w-full h-48 object-cover grayscale-[0.2]">
+                                <div class="absolute inset-0 bg-red-900/20 backdrop-blur-[1px] flex items-center justify-center">
+                                    <div class="bg-white/95 backdrop-blur-md px-4 py-2.5 rounded-lg shadow-xl border-l-4 border-red-500 flex items-center gap-3">
+                                        <i data-lucide="alert-triangle" class="text-red-500 w-5 h-5 fill-red-500/10"></i>
+                                        <div>
+                                            <p class="text-xs font-black text-red-600 font-mono tracking-wide">AI GENERATED</p>
+                                            <p class="text-[10px] text-gray-500 font-mono">99.2% Confidence</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <p class="text-xs text-gray-600">Beautiful sunset in Paris! #nofilter</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white m-4 rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div class="p-3 flex items-center gap-2">
+                                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 text-xs font-bold">N</div>
+                                <span class="text-sm font-bold text-gray-800">NewsDaily</span>
+                                <i data-lucide="check-circle-2" class="w-3 h-3 text-blue-500 fill-blue-50"></i>
+                            </div>
+                            <div class="relative">
+                                <img src="https://picsum.photos/seed/real1/400/300" class="w-full h-48 object-cover">
+                                <div class="absolute top-2 right-2 bg-emerald-500 text-white px-2.5 py-1 rounded-md text-[10px] font-bold shadow-lg flex items-center gap-1.5 backdrop-blur-sm bg-opacity-90 font-mono uppercase tracking-wider">
+                                    <i data-lucide="shield-check" class="w-3 h-3"></i> Verified
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <p class="text-xs text-gray-600">Live coverage from downtown.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="py-24 px-8 bg-slate-50 border-y border-slate-200 z-10 relative">
+        <div class="max-w-7xl mx-auto w-full">
+            <div class="mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold text-slate-900 mb-6 tracking-tight">Detection Pipeline</h2>
+                <div class="w-24 h-1.5 bg-brand-500 rounded-sm"></div>
+                <p class="mt-6 text-slate-500 font-light text-xl">How our multi-layered analysis engine works.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="group p-8 rounded-2xl bg-white border border-slate-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] hover:shadow-xl hover:border-brand-300 transition-all duration-300">
+                    <div class="w-14 h-14 bg-brand-50 rounded-lg flex items-center justify-center mb-6 text-brand-600 group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="aperture" class="w-7 h-7"></i>
+                    </div>
+                    <div class="font-mono text-xs text-brand-500 mb-2 font-bold">STEP 01</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Visual Analysis</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Deep neural networks analyze pixel-level quantization errors and invisible noise patterns unique to diffusion models like Stable Diffusion.
+                    </p>
+                </div>
+
+                <div class="group p-8 rounded-2xl bg-white border border-slate-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] hover:shadow-xl hover:border-accent-300 transition-all duration-300">
+                    <div class="w-14 h-14 bg-indigo-50 rounded-lg flex items-center justify-center mb-6 text-indigo-600 group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="globe-lock" class="w-7 h-7"></i>
+                    </div>
+                    <div class="font-mono text-xs text-indigo-500 mb-2 font-bold">STEP 02</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Context Verification</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Cross-references narrative contexts against real-time global knowledge graphs to flag fabricated events and logical fallacies.
+                    </p>
+                </div>
+
+                <div class="group p-8 rounded-2xl bg-white border border-slate-200 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] hover:shadow-xl hover:border-pink-300 transition-all duration-300">
+                    <div class="w-14 h-14 bg-pink-50 rounded-lg flex items-center justify-center mb-6 text-pink-600 group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="message-square-warning" class="w-7 h-7"></i>
+                    </div>
+                    <div class="font-mono text-xs text-pink-500 mb-2 font-bold">STEP 03</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Semantic Safety</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">
+                        Utilizes semantic sentiment analysis and NLP to detect toxic language patterns, harassment, and radicalization triggers.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-8 bg-slate-900 relative z-10 text-white overflow-hidden">
+        <div class="absolute inset-0 opacity-10" style="background-image: linear-gradient(#334155 1px, transparent 1px), linear-gradient(90deg, #334155 1px, transparent 1px); background-size: 40px 40px;"></div>
+        
+        <div class="max-w-6xl mx-auto w-full relative">
+            <div class="mb-12 flex flex-col md:flex-row justify-between items-end border-b border-slate-800 pb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-white tracking-tight">Forensic Analytics</h2>
+                    <p class="text-slate-400 mt-2 font-light">Deep dive analysis metrics.</p>
+                </div>
+                <div class="mt-4 md:mt-0 flex items-center gap-2 text-xs font-mono text-emerald-400 bg-slate-800/50 px-4 py-2 rounded border border-slate-700">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    STATUS: MONITORING v2.4.0
+                </div>
+            </div>
+            
+            <div class="bg-slate-800/50 backdrop-blur rounded-xl border border-slate-700 overflow-hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-700/50">
+                    
+                    <div class="p-8 hover:bg-slate-800 transition-colors group">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="p-2 bg-brand-500/10 rounded text-brand-400 border border-brand-500/20"><i data-lucide="fingerprint" class="w-5 h-5"></i></div>
+                            <h3 class="font-bold text-slate-200 font-mono">GAN Fingerprinting</h3>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-6 h-10">Analyzes invisible noise patterns unique to generator architectures.</p>
+                        <div class="w-full bg-slate-700 rounded-full h-1.5 mb-2 overflow-hidden">
+                            <div class="bg-brand-500 h-1.5 rounded-full shadow-[0_0_10px_#0ea5e9]" style="width: 98%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] font-mono font-bold text-slate-500 tracking-wider">
+                            <span>MATCH RATE</span>
+                            <span class="text-brand-400">98%</span>
+                        </div>
+                    </div>
+
+                    <div class="p-8 hover:bg-slate-800 transition-colors group">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="p-2 bg-purple-500/10 rounded text-purple-400 border border-purple-500/20"><i data-lucide="cpu" class="w-5 h-5"></i></div>
+                            <h3 class="font-bold text-slate-200 font-mono">Diffusion Noise</h3>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-6 h-10">Reverse-engineers diffusion steps to detect synthetic pixel cohesion.</p>
+                        <div class="flex gap-1 h-12 items-end opacity-80 group-hover:opacity-100 transition-opacity">
+                            <div class="flex-1 bg-purple-900 rounded-t-sm h-[40%] border-t border-purple-500/50"></div>
+                            <div class="flex-1 bg-purple-800 rounded-t-sm h-[60%] border-t border-purple-500/50"></div>
+                            <div class="flex-1 bg-purple-500 rounded-t-sm h-[100%] shadow-[0_0_15px_rgba(168,85,247,0.5)]"></div>
+                            <div class="flex-1 bg-purple-800 rounded-t-sm h-[50%] border-t border-purple-500/50"></div>
+                        </div>
+                    </div>
+
+                    <div class="p-8 hover:bg-slate-800 transition-colors">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="p-2 bg-red-500/10 rounded text-red-400 border border-red-500/20"><i data-lucide="scan-face" class="w-5 h-5"></i></div>
+                            <h3 class="font-bold text-slate-200 font-mono">Biometric Telemetry</h3>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-6 h-10">Detects lack of photoplethysmography and iris micro-movements.</p>
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-500/10 border border-red-500/20 rounded-md text-xs font-mono font-bold text-red-400 w-full justify-center">
+                            <div class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></div>
+                            PULSE NOT DETECTED
+                        </div>
+                    </div>
+
+                    <div class="p-8 hover:bg-slate-800 transition-colors">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="p-2 bg-emerald-500/10 rounded text-emerald-400 border border-emerald-500/20"><i data-lucide="binary" class="w-5 h-5"></i></div>
+                            <h3 class="font-bold text-slate-200 font-mono">Metadata Trace</h3>
+                        </div>
+                        <p class="text-slate-400 text-sm mb-6 h-10">Cross-references EXIF quantization tables against known signatures.</p>
+                        <div class="bg-slate-950 rounded p-3 font-mono text-[10px] text-emerald-400 border border-slate-700/50 shadow-inner">
+                            <span class="opacity-50">0x00</span> 01001011 11010001<br>
+                            <span class="opacity-50">0x10</span> 00110100 10101100
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 bg-white border-t border-slate-200 z-10 relative">
+        <div class="max-w-7xl mx-auto px-8 flex flex-col md:flex-row justify-between gap-8">
+            <div class="space-y-4">
+                <div class="flex items-center gap-2 text-slate-900 font-bold text-xl tracking-tight">
+                    <div class="w-6 h-6 rounded bg-brand-900 flex items-center justify-center text-white text-xs">
+                        <i data-lucide="shield" class="w-3 h-3"></i>
+                    </div>
+                     AEGIS
+                </div>
+                <p class="text-slate-500 text-sm font-medium">Advanced Deepfake Detection Systems.<br>NESCO, MUMBAIHACKS2025</p>
+            </div>
+            <div class="flex gap-16 text-sm">
+                <ul class="space-y-3">
+                    <li class="font-bold text-slate-900 font-mono uppercase text-xs tracking-wider">Product</li>
+                    <li><a href="#" class="text-slate-500 hover:text-brand-600 transition-colors">Protocol</a></li>
+                    <li><a href="#" class="text-slate-500 hover:text-brand-600 transition-colors">API Docs</a></li>
+                    <li><a href="#" class="text-slate-500 hover:text-brand-600 transition-colors">Status</a></li>
+                </ul>
+                <ul class="space-y-3">
+                    <li class="font-bold text-slate-900 font-mono uppercase text-xs tracking-wider">Company</li>
+                    <li><a href="#" class="text-slate-500 hover:text-brand-600 transition-colors">About</a></li>
+                    <li><a href="#" class="text-slate-500 hover:text-brand-600 transition-colors">Contact</a></li>
+                    <li><a href="#" class="text-slate-500 hover:text-brand-600 transition-colors">Privacy</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

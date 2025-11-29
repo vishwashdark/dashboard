@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEGIS | System Access</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            500: '#3b82f6', // Standard Corporate Blue
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        },
+                        slate: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(0, 0, 0, 0.1)',
+                        'glow': '0 0 15px rgba(59, 130, 246, 0.5)'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap');
+
+        body {
+            background-color: #ffffff;
+            color: #334155;
+            overflow-x: hidden;
+        }
+
+        /* Subtle background gradient blob */
+        .bg-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            z-index: -1;
+            pointer-events: none;
+        }
+    </style>
+
+    <script>
+        // --- API CONFIGURATION ---
+        const API_URL = "http://127.0.0.1:5000/api"; 
+
+        // --- AUTH LOGIC ---
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            setStatus('Authenticating...', 'warn');
+            
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    setStatus('Access Granted. Redirecting...', 'success');
+                    localStorage.setItem('aegis_user', data.user_id);
+                    setTimeout(() => window.location.href = 'dashboard.html', 1500); 
+                } else {
+                    setStatus(data.error || 'Login Failed', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                setStatus('Connection Failure. Is backend running?', 'error');
+            }
+        }
+
+        async function handleSignup(e) {
+            e.preventDefault();
+            const email = document.getElementById('su-email').value;
+            const password = document.getElementById('su-password').value;
+            const confirm = document.getElementById('su-confirm').value;
+
+            if(password !== confirm) {
+                setStatus('Passwords do not match', 'error');
+                return;
+            }
+
+            setStatus('Creating Account...', 'warn');
+
+            try {
+                const response = await fetch(`${API_URL}/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    setStatus('Account Created. Please Log In.', 'success');
+                    setTimeout(showLogin, 2000);
+                } else {
+                    setStatus(data.error || 'Signup Failed', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                setStatus('Connection Failure', 'error');
+            }
+        }
+
+        async function handleForgot(e) {
+            e.preventDefault();
+            const email = document.getElementById('fp-email').value;
+            
+            setStatus('Sending Recovery Link...', 'warn');
+
+            try {
+                const response = await fetch(`${API_URL}/forgot-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                if (response.ok) {
+                    setStatus('Recovery Link Sent.', 'success');
+                    setTimeout(showLogin, 3000);
+                } else {
+                    setStatus('Request Rejected by Server', 'error');
+                }
+            } catch (error) {
+                setStatus('Connection Failure', 'error');
+            }
+        }
+
+        // --- UI UTILS ---
+        function setStatus(msg, type) {
+            const statusMsg = document.getElementById('status-msg');
+            statusMsg.innerText = msg;
+            statusMsg.className = "text-sm font-medium mt-4 text-center transition-colors duration-300";
+            
+            // Updated colors for light theme
+            if(type === 'error') statusMsg.classList.add('text-red-600');
+            if(type === 'success') statusMsg.classList.add('text-green-600');
+            if(type === 'warn') statusMsg.classList.add('text-brand-600');
+            
+            statusMsg.style.opacity = '1';
+        }
+
+        function showSignup() {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('forgot-form').classList.add('hidden');
+            document.getElementById('signup-form').classList.remove('hidden');
+            document.getElementById('form-title').innerText = "Create Account";
+            document.getElementById('form-subtitle').innerText = "Get started with your free account.";
+            clearStatus();
+        }
+
+        function showLogin() {
+            document.getElementById('signup-form').classList.add('hidden');
+            document.getElementById('forgot-form').classList.add('hidden');
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('form-title').innerText = "Welcome Back";
+            document.getElementById('form-subtitle').innerText = "Enter your credentials to access the system.";
+            clearStatus();
+        }
+
+        function showForgot() {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('signup-form').classList.add('hidden');
+            document.getElementById('forgot-form').classList.remove('hidden');
+            document.getElementById('form-title').innerText = "Reset Password";
+            document.getElementById('form-subtitle').innerText = "We'll send you a recovery link.";
+            clearStatus();
+        }
+
+        function clearStatus() {
+            const statusMsg = document.getElementById('status-msg');
+            statusMsg.innerText = '';
+            statusMsg.style.opacity = '0';
+        }
+    </script>
+</head>
+<body class="flex items-center justify-center min-h-screen relative">
+
+    <!-- Background Elements -->
+    <div class="bg-blob top-0 left-[-200px]"></div>
+    <div class="bg-blob bottom-0 right-[-200px]" style="background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, rgba(255, 255, 255, 0) 70%);"></div>
+
+    <!-- Navigation (Return to Home) -->
+    <nav class="absolute top-0 left-0 w-full p-6 z-50">
+        <a href="index.html" class="inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-brand-600 transition-colors">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            Back to Home
+        </a>
+    </nav>
+
+    <!-- Main Auth Card -->
+    <main class="w-full max-w-md p-6 relative z-10">
+        
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+            
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-brand-50 text-brand-600 mb-4">
+                    <img src="style/logo.png" alt="AEGIS Logo" class="w-6 h-6 object-contain">
+                </div>
+                <h1 id="form-title" class="text-2xl font-bold text-slate-900">Welcome Back</h1>
+                <p id="form-subtitle" class="text-slate-500 text-sm mt-2">Enter your credentials to access the system.</p>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-5">
+                <div class="space-y-1.5">
+                    <label class="text-sm font-medium text-slate-700">Email Address</label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="absolute left-3 top-3 text-slate-400 w-5 h-5"></i>
+                        <input type="email" id="email" required 
+                               class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm text-slate-900 placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all" 
+                               placeholder="name@company.com">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <label class="text-sm font-medium text-slate-700">Password</label>
+                        <button type="button" onclick="showForgot()" class="text-xs font-medium text-brand-600 hover:text-brand-700 transition-colors">Forgot password?</button>
+                    </div>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3 top-3 text-slate-400 w-5 h-5"></i>
+                        <input type="password" id="password" required 
+                               class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm text-slate-900 placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all" 
+                               placeholder="••••••••">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 rounded-lg bg-brand-600 text-white font-bold text-sm shadow-lg shadow-brand-500/30 hover:bg-brand-700 hover:shadow-brand-500/40 transition-all transform hover:-translate-y-0.5">
+                    Sign In
+                </button>
+                
+                <div class="text-center pt-4 border-t border-gray-100">
+                    <p class="text-sm text-slate-500">Don't have an account?</p>
+                    <button type="button" onclick="showSignup()" class="mt-1 text-sm font-bold text-brand-600 hover:text-brand-700 transition-colors">Create an account</button>
+                </div>
+            </form>
+
+            <!-- SIGNUP FORM (Hidden by default) -->
+            <form id="signup-form" onsubmit="handleSignup(event)" class="space-y-5 hidden">
+                <div class="space-y-1.5">
+                    <label class="text-sm font-medium text-slate-700">Email Address</label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="absolute left-3 top-3 text-slate-400 w-5 h-5"></i>
+                        <input type="email" id="su-email" required 
+                               class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm text-slate-900 placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all" 
+                               placeholder="name@company.com">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-sm font-medium text-slate-700">Password</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3 top-3 text-slate-400 w-5 h-5"></i>
+                        <input type="password" id="su-password" required 
+                               class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm text-slate-900 placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all" 
+                               placeholder="Create a password">
+                    </div>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-sm font-medium text-slate-700">Confirm Password</label>
+                    <div class="relative">
+                        <i data-lucide="check-circle" class="absolute left-3 top-3 text-slate-400 w-5 h-5"></i>
+                        <input type="password" id="su-confirm" required 
+                               class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm text-slate-900 placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all" 
+                               placeholder="Confirm password">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 rounded-lg bg-brand-600 text-white font-bold text-sm shadow-lg shadow-brand-500/30 hover:bg-brand-700 hover:shadow-brand-500/40 transition-all transform hover:-translate-y-0.5">
+                    Create Account
+                </button>
+                
+                <div class="text-center pt-4 border-t border-gray-100">
+                    <button type="button" onclick="showLogin()" class="text-sm font-medium text-slate-500 hover:text-brand-600 transition-colors flex items-center justify-center gap-1 mx-auto">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Login
+                    </button>
+                </div>
+            </form>
+
+            <!-- FORGOT PASSWORD FORM (Hidden by default) -->
+            <form id="forgot-form" onsubmit="handleForgot(event)" class="space-y-5 hidden">
+                <div class="p-3 bg-blue-50 border border-blue-100 rounded-lg text-xs text-blue-700 mb-2 flex items-start gap-2">
+                    <i data-lucide="info" class="w-4 h-4 shrink-0 mt-0.5"></i>
+                    <span>Enter your email address and we will send you a link to reset your password.</span>
+                </div>
+
+                <div class="space-y-1.5">
+                    <label class="text-sm font-medium text-slate-700">Email Address</label>
+                    <div class="relative">
+                        <i data-lucide="mail" class="absolute left-3 top-3 text-slate-400 w-5 h-5"></i>
+                        <input type="email" id="fp-email" required 
+                               class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-300 rounded-lg text-sm text-slate-900 placeholder-gray-400 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all" 
+                               placeholder="name@company.com">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 rounded-lg bg-brand-600 text-white font-bold text-sm shadow-lg shadow-brand-500/30 hover:bg-brand-700 hover:shadow-brand-500/40 transition-all transform hover:-translate-y-0.5">
+                    Send Recovery Link
+                </button>
+                
+                <div class="text-center pt-4 border-t border-gray-100">
+                    <button type="button" onclick="showLogin()" class="text-sm font-medium text-slate-500 hover:text-brand-600 transition-colors flex items-center justify-center gap-1 mx-auto">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Login
+                    </button>
+                </div>
+            </form>
+
+            <!-- Status Message Area -->
+            <div id="status-msg" class="text-sm font-medium mt-4 text-center opacity-0 transition-opacity duration-300"></div>
+
+        </div>
+        
+        <div class="text-center mt-6 text-xs text-slate-400">
+            &copy; 2025 AEGIS Inc. Secure Connection.
+        </div>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

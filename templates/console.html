@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Safety - TrustEngine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Badges from your console.html */
+        .badge-low { background: #DCFCE7; color: #166534; }   /* Green */
+        .badge-high { background: #FEE2E2; color: #991B1B; }  /* Red */
+        .badge-med { background: #FEF3C7; color: #92400E; }   /* Yellow */
+        
+        .status-verified { background: #D1FAE5; color: #065F46; }
+        .status-flagged { background: #FFE4E6; color: #BE123C; }
+        .status-appealed { background: #DBEAFE; color: #1E40AF; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen p-8">
+
+    <!-- Header -->
+    <div class="flex justify-between items-end mb-8">
+        <div>
+            <a href="dashboard.html" class="text-sm text-slate-500 hover:text-emerald-600 font-medium mb-2 inline-block">
+                <i class="fa-solid fa-arrow-left mr-1"></i> Back to Hub
+            </a>
+            <h1 class="text-2xl font-bold text-slate-900">Enterprise Safety Overview</h1>
+            <p class="text-slate-500">Global view of analyzed media and risk assessments.</p>
+        </div>
+        <div class="flex items-center gap-3">
+             <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition">
+                <i class="fa-solid fa-upload"></i> New Analysis
+            </button>
+            <span class="flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-sm font-bold border border-emerald-100">
+                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> System Operational
+            </span>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <!-- Stat 1 -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="text-slate-500 text-sm font-medium mb-2">Total Media Scanned</div>
+            <div class="text-3xl font-bold text-slate-800">8.4M</div>
+            <div class="text-emerald-500 text-xs font-bold mt-2">↑ 12% this week</div>
+        </div>
+        <!-- Stat 2 -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="text-slate-500 text-sm font-medium mb-2">Flagged Content</div>
+            <div class="text-3xl font-bold text-slate-800">14.2k</div>
+            <div class="text-red-500 text-xs font-bold mt-2">↑ 4% this week</div>
+        </div>
+        <!-- Stat 3 -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="text-slate-500 text-sm font-medium mb-2">Auto-Takedowns</div>
+            <div class="text-3xl font-bold text-slate-800">98.1%</div>
+            <div class="text-slate-400 text-xs mt-2">Precision rate</div>
+        </div>
+        <!-- Stat 4 -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+            <div class="text-slate-500 text-sm font-medium mb-2">Pending Appeals</div>
+            <div class="text-3xl font-bold text-slate-800">243</div>
+            <div class="text-orange-500 text-xs font-bold mt-2">Requires Action</div>
+        </div>
+    </div>
+
+    <!-- Main Content Area: Analyzed Media Table -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        
+        <!-- Filter Bar -->
+        <div class="p-4 border-b border-gray-100 flex gap-4 bg-slate-50/50">
+            <div class="relative flex-1 max-w-md">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
+                <input type="text" placeholder="Search by username, ID..." class="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <button class="px-4 py-2 border border-gray-200 bg-white rounded-lg text-sm text-gray-600 hover:bg-gray-50 flex items-center gap-2">
+                <i class="fa-solid fa-filter"></i> Filter
+            </button>
+            <div class="ml-auto text-sm text-slate-400 flex items-center">
+                Showing last 30 days
+            </div>
+        </div>
+
+        <table class="w-full text-left border-collapse">
+            <thead class="bg-slate-50 text-xs uppercase text-slate-500 font-semibold border-b border-slate-100">
+                <tr>
+                    <th class="px-6 py-4">Media</th>
+                    <th class="px-6 py-4">User / Source</th>
+                    <th class="px-6 py-4">Risk Level</th>
+                    <th class="px-6 py-4">AI Confidence</th>
+                    <th class="px-6 py-4">Status</th>
+                    <th class="px-6 py-4 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-sm">
+                
+                <!-- Row 1: Sarah -->
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="px-6 py-4">
+                        <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=100&q=80" class="w-12 h-12 rounded-lg object-cover shadow-sm">
+                    </td>
+                    <td class="px-6 py-4">
+                        <p class="font-bold text-slate-800">sarah_travels</p>
+                        <p class="text-xs text-gray-400"><i class="fa-brands fa-instagram"></i> 11/12/2023</p>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold badge-low">LOW</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-green-500 w-[13%]"></div>
+                            </div>
+                            <span class="text-xs text-gray-400">13%</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold status-verified">VERIFIED</span>
+                    </td>
+                    <td class="px-6 py-4 text-right text-gray-400 cursor-pointer hover:text-emerald-600">
+                        <i class="fa-solid fa-ellipsis-vertical px-2"></i>
+                    </td>
+                </tr>
+
+                <!-- Row 2: Crypto King -->
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="px-6 py-4">
+                        <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=100&q=80" class="w-12 h-12 rounded-lg object-cover shadow-sm">
+                    </td>
+                    <td class="px-6 py-4">
+                        <p class="font-bold text-slate-800">crypto_king_99</p>
+                        <p class="text-xs text-gray-400"><i class="fa-brands fa-instagram"></i> 11/12/2023</p>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold badge-high">HIGH</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-red-500 w-[94%]"></div>
+                            </div>
+                            <span class="text-xs text-gray-400">94%</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold status-flagged">FLAGGED</span>
+                    </td>
+                    <td class="px-6 py-4 text-right text-gray-400 cursor-pointer hover:text-emerald-600">
+                        <i class="fa-solid fa-ellipsis-vertical px-2"></i>
+                    </td>
+                </tr>
+
+                <!-- Row 3: Art Daily -->
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="px-6 py-4">
+                        <img src="https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=100&q=80" class="w-12 h-12 rounded-lg object-cover shadow-sm">
+                    </td>
+                    <td class="px-6 py-4">
+                        <p class="font-bold text-slate-800">art_daily</p>
+                        <p class="text-xs text-gray-400"><i class="fa-brands fa-instagram"></i> 11/12/2023</p>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold badge-med">MEDIUM</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-24 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-orange-400 w-[45%]"></div>
+                            </div>
+                            <span class="text-xs text-gray-400">45%</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold status-appealed">APPEALED</span>
+                    </td>
+                    <td class="px-6 py-4 text-right text-gray-400 cursor-pointer hover:text-emerald-600">
+                        <i class="fa-solid fa-ellipsis-vertical px-2"></i>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

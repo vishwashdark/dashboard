@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad-Tech Safety - TrustEngine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen p-6">
+
+    <!-- Top Navigation -->
+    <div class="max-w-7xl mx-auto mb-8 flex justify-between items-center">
+        <a href="dashboard.html" class="flex items-center text-slate-500 hover:text-blue-600 transition font-medium">
+            <i class="fa-solid fa-arrow-left mr-2"></i> Back to TrustEngine Hub
+        </a>
+        <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 text-sm text-slate-400">
+                <span class="px-2 py-1 bg-white border border-slate-200 rounded text-xs font-semibold">TrustEngine AI</span>
+                <span>/</span>
+                <span class="font-semibold text-blue-600">Ad-Tech Pre-Flight</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Left Column: Input (4 cols) -->
+        <div class="lg:col-span-5 space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <i class="fa-regular fa-image text-blue-500"></i> Creative Asset
+                </h2>
+                
+                <!-- Upload Area -->
+                <div class="mb-5 border-2 border-dashed border-slate-300 rounded-xl p-2 text-center hover:bg-slate-50 transition relative group h-64 flex flex-col justify-center items-center bg-slate-50/50">
+                    <input type="file" id="imageInput" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" onchange="previewImage(event)">
+                    
+                    <div id="uploadPlaceholder" class="transition-transform group-hover:scale-105 duration-200">
+                        <div class="w-16 h-16 bg-blue-100 text-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
+                        </div>
+                        <p class="text-sm font-semibold text-slate-600">Upload Creative</p>
+                        <p class="text-xs text-slate-400 mt-1">JPG, PNG, WEBP (Max 10MB)</p>
+                    </div>
+                    
+                    <img id="imagePreview" class="hidden h-full w-full object-contain rounded-lg shadow-sm" />
+                </div>
+
+                <!-- Caption Input -->
+                <div class="mb-5 relative">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-2 flex justify-between">
+                        <span>Ad Copy / Caption</span>
+                        <span class="text-blue-600 cursor-pointer hover:underline text-[10px]" onclick="document.getElementById('captionInput').value=''">Clear</span>
+                    </label>
+                    <textarea id="captionInput" rows="4" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none transition-shadow" placeholder="Paste your ad copy here for analysis..."></textarea>
+                    
+                    <!-- Fix Loading Indicator -->
+                    <div id="fixLoading" class="hidden absolute inset-0 bg-white/80 backdrop-blur-sm rounded-xl flex items-center justify-center z-20">
+                        <div class="text-blue-600 font-semibold text-sm animate-pulse">
+                            <i class="fa-solid fa-wand-magic-sparkles fa-spin mr-2"></i>Rewriting...
+                        </div>
+                    </div>
+                </div>
+
+                <button onclick="runAnalysis()" id="scanBtn" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl font-semibold shadow-lg shadow-slate-200 transition-all active:scale-[0.98] flex justify-center items-center gap-2">
+                    <i class="fa-solid fa-shield-halved"></i> <span>Scan with Agent Swarm</span>
+                </button>
+            </div>
+
+            <!-- Fix Actions (Hidden initially) -->
+            <div id="fixActionPanel" class="hidden fade-in bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-100 p-6 rounded-2xl shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                    <i class="fa-solid fa-robot text-6xl text-blue-600"></i>
+                </div>
+                <h3 class="text-blue-900 font-bold mb-2 flex items-center gap-2 relative z-10">
+                    <i class="fa-solid fa-wand-magic-sparkles text-blue-500"></i> AI Remediation
+                </h3>
+                <p id="fixSuggestion" class="text-sm text-slate-600 mb-5 relative z-10 leading-relaxed bg-white/50 p-3 rounded-lg border border-blue-100">
+                    <!-- Suggestion text -->
+                </p>
+                <div class="flex gap-3 relative z-10">
+                    <button onclick="applyFix()" id="applyFixBtn" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition shadow-md shadow-blue-200">
+                        Apply Fix to Caption
+                    </button>
+                    <button class="px-4 py-2.5 bg-white border border-blue-200 text-blue-700 hover:bg-blue-50 rounded-lg font-medium text-sm transition">
+                        Dismiss
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Analysis (8 cols) -->
+        <div class="lg:col-span-7 space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col h-full min-h-[600px]">
+                
+                <!-- Header -->
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50 rounded-t-2xl">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-800">Safety Intelligence Report</h2>
+                        <p class="text-xs text-slate-500 mt-1">Real-time analysis by TrustEngine Swarm</p>
+                    </div>
+                    <div id="riskBadge" class="hidden px-4 py-1.5 rounded-full text-xs font-bold border tracking-wide uppercase shadow-sm">
+                        ANALYZING...
+                    </div>
+                </div>
+                
+                <div class="p-6 space-y-8 flex-1 overflow-y-auto">
+                    
+                    <!-- 1. Agent Status Grid -->
+                    <div id="agentGrid" class="grid grid-cols-2 md:grid-cols-4 gap-4 hidden">
+                        <!-- Authenticity -->
+                        <div class="bg-white border border-slate-100 p-3 rounded-xl shadow-sm flex flex-col items-center text-center">
+                            <div class="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-2 text-xs">
+                                <i class="fa-solid fa-fingerprint"></i>
+                            </div>
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Authenticity</span>
+                            <span class="text-sm font-bold text-slate-700 mt-1">Verified</span>
+                        </div>
+                        <!-- Safety -->
+                        <div class="bg-white border border-slate-100 p-3 rounded-xl shadow-sm flex flex-col items-center text-center">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-2 text-xs">
+                                <i class="fa-solid fa-shield-cat"></i>
+                            </div>
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Safety</span>
+                            <span id="miniScoreSafety" class="text-sm font-bold text-slate-700 mt-1">--</span>
+                        </div>
+                        <!-- Compliance -->
+                        <div class="bg-white border border-slate-100 p-3 rounded-xl shadow-sm flex flex-col items-center text-center">
+                            <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mb-2 text-xs">
+                                <i class="fa-solid fa-scale-balanced"></i>
+                            </div>
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Compliance</span>
+                            <span id="miniScoreCompliance" class="text-sm font-bold text-slate-700 mt-1">--</span>
+                        </div>
+                        <!-- Trust -->
+                        <div class="bg-white border border-slate-100 p-3 rounded-xl shadow-sm flex flex-col items-center text-center">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center mb-2 text-xs">
+                                <i class="fa-solid fa-star"></i>
+                            </div>
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Brand Fit</span>
+                            <span id="miniScoreBrand" class="text-sm font-bold text-slate-700 mt-1">--</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Detailed Metrics -->
+                    <div id="metricsPanel" class="hidden space-y-6">
+                        
+                        <!-- High Level Bars -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <!-- Deepfake Meter -->
+                            <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                                <div class="flex justify-between items-end mb-3">
+                                    <span class="text-sm font-semibold text-slate-700"><i class="fa-solid fa-face-viewfinder mr-2 text-slate-400"></i>Deepfake Probability</span>
+                                    <span id="deepfakeScore" class="text-lg font-bold text-slate-900">--%</span>
+                                </div>
+                                <div class="h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                                    <div id="deepfakeBar" class="h-full bg-slate-400 w-[0%] transition-all duration-1000"></div>
+                                </div>
+                                <p class="text-[10px] text-slate-400 mt-2 text-right">Based on pixel inconsistency analysis</p>
+                            </div>
+
+                            <!-- Toxicity Meter -->
+                            <div class="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                                <div class="flex justify-between items-end mb-3">
+                                    <span class="text-sm font-semibold text-slate-700"><i class="fa-solid fa-radiation mr-2 text-slate-400"></i>Harmful Content</span>
+                                    <span id="toxicityScore" class="text-lg font-bold text-slate-900">--%</span>
+                                </div>
+                                <div class="h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                                    <div id="toxicityBar" class="h-full bg-slate-400 w-[0%] transition-all duration-1000"></div>
+                                </div>
+                                <p class="text-[10px] text-slate-400 mt-2 text-right">Visual & Semantic toxicity check</p>
+                            </div>
+                        </div>
+
+                        <!-- Claims Section -->
+                        <div>
+                            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 border-b border-slate-100 pb-2">Claim Verification Log</h3>
+                            <div id="claimsList" class="space-y-3">
+                                <!-- Claims injected here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Terminal Log (Bottom) -->
+                    <div class="bg-slate-900 rounded-xl p-5 font-mono text-xs shadow-inner border border-slate-800">
+                        <div class="flex justify-between text-slate-500 border-b border-slate-800 pb-3 mb-3">
+                            <span class="flex items-center gap-2"><i class="fa-solid fa-terminal"></i> SWARM_LOGS_V2.1</span>
+                            <span class="flex items-center gap-2"><span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> LIVE</span>
+                        </div>
+                        <div id="consoleOutput" class="space-y-2 h-32 overflow-y-auto text-slate-300">
+                            <div class="text-slate-600 italic">System ready. Waiting for asset upload...</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentFile = null;
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                currentFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('imagePreview');
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                    document.getElementById('uploadPlaceholder').classList.add('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function runAnalysis() {
+            const caption = document.getElementById('captionInput').value;
+            const btn = document.getElementById('scanBtn');
+            const consoleDiv = document.getElementById('consoleOutput');
+
+            if (!currentFile) {
+                alert("Please upload an image first.");
+                return;
+            }
+
+            // UI Reset & Loading
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Analyzing Assets...</span>';
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+            btn.disabled = true;
+            
+            consoleDiv.innerHTML = '<div class="text-blue-400">> Initializing Agent Swarm...</div>';
+            document.getElementById('metricsPanel').classList.add('hidden');
+            document.getElementById('fixActionPanel').classList.add('hidden');
+            document.getElementById('agentGrid').classList.add('hidden');
+
+            const formData = new FormData();
+            formData.append('image', currentFile);
+            formData.append('caption', caption);
+
+            try {
+                const response = await fetch('/api/scan-creative', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.error) throw new Error(result.error);
+
+                renderResults(result.data);
+
+            } catch (error) {
+                consoleDiv.innerHTML += `<div class="text-red-500 mt-2">> Error: ${error.message}</div>`;
+                btn.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <span>Scan Failed</span>';
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> <span>Scan with Agent Swarm</span>';
+                    btn.disabled = false;
+                    btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                }, 2000);
+            } finally {
+                if(!btn.disabled) return; 
+                // Restore button state handled in render or catch
+            }
+        }
+
+        function renderResults(data) {
+            const consoleDiv = document.getElementById('consoleOutput');
+            const metricsPanel = document.getElementById('metricsPanel');
+            const agentGrid = document.getElementById('agentGrid');
+            const fixPanel = document.getElementById('fixActionPanel');
+            const riskBadge = document.getElementById('riskBadge');
+            const btn = document.getElementById('scanBtn');
+
+            // Reset Button
+            btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> <span>Re-Scan Asset</span>';
+            btn.disabled = false;
+            btn.classList.remove('opacity-75', 'cursor-not-allowed');
+
+            // 1. Logs Animation
+            data.agent_logs.forEach((log, index) => {
+                setTimeout(() => {
+                    let colorClass = log.status === 'alert' ? 'text-red-400' : (log.status === 'success' ? 'text-green-400' : 'text-blue-300');
+                    let icon = log.status === 'alert' ? '!' : '✓';
+                    
+                    const logHtml = `
+                        <div class="fade-in flex gap-3 border-l-2 border-slate-700 pl-3 py-1 hover:bg-slate-800/50 transition">
+                            <span class="w-24 text-slate-500 font-bold text-[10px] uppercase tracking-wider pt-0.5">${log.agent}</span>
+                            <span class="${colorClass} flex-1 font-mono">
+                                <span class="font-bold mr-2">[${icon}]</span>${log.message}
+                            </span>
+                        </div>
+                    `;
+                    consoleDiv.innerHTML += logHtml;
+                    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+                }, index * 200);
+            });
+
+            // 2. Risk Badge
+            riskBadge.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'border-red-200', 'bg-green-100', 'text-green-700', 'border-green-200', 'bg-yellow-100', 'text-yellow-800', 'border-yellow-200');
+            riskBadge.innerText = `${data.overall_risk} RISK DETECTED`;
+            
+            if(data.overall_risk.toLowerCase() === 'high') {
+                riskBadge.classList.add('bg-red-50', 'text-red-600', 'border-red-200');
+            } else if (data.overall_risk.toLowerCase() === 'medium') {
+                riskBadge.classList.add('bg-yellow-50', 'text-yellow-700', 'border-yellow-200');
+            } else {
+                riskBadge.classList.add('bg-green-50', 'text-green-700', 'border-green-200');
+            }
+
+            // 3. Show Panels
+            setTimeout(() => {
+                agentGrid.classList.remove('hidden');
+                agentGrid.classList.add('fade-in');
+                
+                metricsPanel.classList.remove('hidden');
+                metricsPanel.classList.add('fade-in');
+                
+                if(data.suggested_fix) {
+                    fixPanel.classList.remove('hidden');
+                    document.getElementById('fixSuggestion').innerText = data.suggested_fix;
+                }
+            }, 500);
+
+            // 4. Update Metrics
+            document.getElementById('miniScoreSafety').innerText = data.scores.safety + '/100';
+            document.getElementById('miniScoreCompliance').innerText = data.scores.compliance + '/100';
+            document.getElementById('miniScoreBrand').innerText = data.scores.brand_fit + '/100';
+
+            updateBar('deepfakeBar', 'deepfakeScore', data.scores.deepfake_probability);
+            updateBar('toxicityBar', 'toxicityScore', data.scores.toxicity_score);
+
+            // 5. Claims
+            const claimsDiv = document.getElementById('claimsList');
+            claimsDiv.innerHTML = '';
+            data.claims_analysis.forEach(claim => {
+                const isViolation = claim.verdict.toLowerCase().includes('violated');
+                const borderClass = isViolation ? 'border-l-4 border-l-red-500' : 'border-l-4 border-l-green-500';
+                const bgClass = isViolation ? 'bg-red-50' : 'bg-green-50';
+                const iconClass = isViolation ? 'fa-circle-xmark text-red-500' : 'fa-circle-check text-green-500';
+
+                claimsDiv.innerHTML += `
+                    <div class="fade-in p-3 bg-white rounded-r-lg border border-slate-100 ${borderClass} shadow-sm flex items-start gap-3">
+                        <i class="fa-solid ${iconClass} mt-1"></i>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-800">"${claim.claim}"</p>
+                            <p class="text-xs text-slate-500 mt-1">${claim.details}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateBar(barId, scoreId, value) {
+            const bar = document.getElementById(barId);
+            const score = document.getElementById(scoreId);
+            
+            score.innerText = value + '%';
+            bar.style.width = value + '%';
+            
+            // Color logic
+            bar.className = 'h-full transition-all duration-1000 rounded-full ';
+            if(value < 30) bar.classList.add('bg-green-500');
+            else if(value < 70) bar.classList.add('bg-yellow-500');
+            else bar.classList.add('bg-red-500');
+        }
+
+        async function applyFix() {
+            const captionInput = document.getElementById('captionInput');
+            const fixLoading = document.getElementById('fixLoading');
+            const btn = document.getElementById('applyFixBtn');
+            const originalCaption = captionInput.value;
+
+            // 1. Show Loading State on Textarea
+            fixLoading.classList.remove('hidden');
+            btn.disabled = true;
+            btn.innerText = 'Applying...';
+
+            try {
+                // 2. Call the Fix API
+                const formData = new FormData();
+                formData.append('caption', originalCaption);
+                if(currentFile) {
+                    formData.append('image', currentFile);
+                }
+
+                const response = await fetch('/api/fix-creative', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (result.error) throw new Error(result.error);
+
+                // 3. Update Caption with Typing Effect
+                captionInput.value = result.fixed_caption;
+                
+                // 4. Feedback
+                btn.innerText = 'Fix Applied!';
+                btn.classList.add('bg-green-600', 'hover:bg-green-700');
+                
+            } catch (error) {
+                alert("Failed to apply fix: " + error.message);
+                btn.innerText = 'Retry Fix';
+                btn.disabled = false;
+            } finally {
+                fixLoading.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
