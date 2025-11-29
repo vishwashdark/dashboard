@@ -1,4 +1,4 @@
-# 🛡️ Aegis TrustEngine Dashboard
+#  Aegis TrustEngine Dashboard
 
 **A Multi-Agent Forensic Auditing System for AdTech & Influencer Marketing**
 
@@ -6,7 +6,7 @@ The Aegis TrustEngine is a forensic auditing dashboard designed for brands, agen
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 - [Overview](#overview)
 - [Intelligence Pipeline](#-the-intelligence-pipeline)
@@ -33,7 +33,7 @@ Aegis TrustEngine provides enterprise-grade content verification and influencer 
 
 ---
 
-## 🧠 The Intelligence Pipeline
+##  The Intelligence Pipeline
 
 Data flows through a multi-stage pipeline designed to eliminate high-risk content before it reaches the brand.
 
@@ -63,7 +63,7 @@ graph TD
 
 ---
 
-## 🤖 The Agent Swarm (Personas)
+##  The Agent Swarm (Personas)
 
 Multi-agent personas designed with cynical, brand-protective prompt engineering to maximize risk detection.
 
@@ -86,7 +86,7 @@ Follower Growth Spike without Content Quality = BOT PURCHASE
 
 ---
 
-### 2. 🕵️‍♀️ The Forensic Analyst — "Zero Tolerance"
+### 2.  The Forensic Analyst — "Zero Tolerance"
 
 **Role**: Deepfake detection  
 **Policy**: Flags ANY content with even a 1% likelihood of AI involvement
@@ -106,7 +106,7 @@ Follower Growth Spike without Content Quality = BOT PURCHASE
 
 ---
 
-### 3. ⚖️ The Risk Auditor
+### 3.  The Risk Auditor
 
 **Role**: Toxicity, fraud, and safety auditing
 
@@ -125,7 +125,7 @@ Follower Growth Spike without Content Quality = BOT PURCHASE
 
 ---
 
-### 4. 🐝 The Compliance Swarm
+### 4.  The Compliance Swarm
 
 A 4-node cluster enforcing strict brand safety & regulatory rules.
 
@@ -153,7 +153,7 @@ A 4-node cluster enforcing strict brand safety & regulatory rules.
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 ```
 dashboard/
@@ -181,7 +181,7 @@ dashboard/
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -195,7 +195,7 @@ dashboard/
 
 ---
 
-## 🚀 Setup & Installation
+##  Setup & Installation
 
 ### Prerequisites
 
@@ -252,7 +252,7 @@ Access the application at: **http://localhost:5000**
 
 ---
 
-## 💼 Usage
+##  Usage
 
 ### Authentication
 
@@ -278,9 +278,9 @@ Access the application at: **http://localhost:5000**
 
 ---
 
-## ✨ Features
+##  Features
 
-### 🎯 Core Capabilities
+###  Core Capabilities
 
 - **Deepfake Detection**: Multi-model approach to identify AI-generated content
 - **Influencer Fraud Detection**: Bot network identification and engagement analysis
@@ -288,14 +288,14 @@ Access the application at: **http://localhost:5000**
 - **Financial Risk Assessment**: ROI prediction and negotiation insights
 - **Regulatory Compliance**: FTC disclosure and claim verification
 
-### 📊 Analytics
+###  Analytics
 
 - Real-time risk dashboards
 - Historical trend analysis
 - Comparative benchmarking
 - Exportable audit reports (PDF/CSV)
 
-### 🔐 Security
+###  Security
 
 - Role-based access control (RBAC)
 - Encrypted API communications
@@ -304,7 +304,7 @@ Access the application at: **http://localhost:5000**
 
 ---
 
-## 📡 API Reference
+##  API Reference
 
 ### POST `/api/analyze_influencer`
 
@@ -359,7 +359,7 @@ Audits ad creative for brand safety and compliance.
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions! Please follow these guidelines:
 
@@ -376,31 +376,7 @@ We welcome contributions! Please follow these guidelines:
 - Include unit tests for new features
 - Update documentation as needed
 
----
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- Gemini AI team for multimodal capabilities
-- OpenAI for content moderation APIs
-- OpenCV community for computer vision tools
-- MongoDB for scalable database infrastructure
-
----
-
-## 📞 Support
-
-For questions or support:
-- **Email**: support@aegis-trust.ai
-- **Documentation**: [docs.aegis-trust.ai](https://docs.aegis-trust.ai)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/aegis-trustengine/issues)
-
----
 
 **Built with 🛡️ by the Aegis Team**  
 *Protecting Brands in the Age of AI Deception*
